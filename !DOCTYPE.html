@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập 100 Câu Trắc Nghiệm Đúng/Sai - Lịch Sử 12 Giữa Kỳ 1</title>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-hover: #1557b0;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #202124;
+            --success: #34a853;
+            --danger: #ea4335;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 750px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            text-align: center;
+            color: #5f6368;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            background: #e8f0fe;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .question-card {
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .option-btn {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border: 2px solid #dadce0;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #f1f3f4;
+        }
+
+        .option-btn.correct {
+            background-color: #d4edda !important;
+            border-color: var(--success) !important;
+            color: #155724 !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: #f8d7da !important;
+            border-color: var(--danger) !important;
+            color: #721c24 !important;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .result-box {
+            text-align: center;
+        }
+
+        .result-box h2 {
+            color: var(--primary);
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Màn hình bắt đầu -->
+    <div id="start-screen">
+        <h1>ÔN TẬP 100 CÂU LỊCH SỬ 12 - GIỮA KỲ 1</h1>
+        <p class="description">Hệ thống 100 câu hỏi Trắc nghiệm Đúng / Sai ôn tập toàn diện bám sát đề cương.</p>
+        <button class="btn" onclick="startGame()">Bắt Đầu Làm Bài</button>
+    </div>
+
+    <!-- Màn hình làm bài -->
+    <div id="quiz-screen" class="hidden">
+        <div class="info-bar">
+            <span>Câu: <span id="current-question">1</span>/<span id="total-questions">100</span></span>
+            <span>Thời gian: <span id="timer">00:00</span></span>
+        </div>
+        <div class="question-card">
+            <div id="question-title" class="question-text">Đang tải câu hỏi...</div>
+            <div id="options-container" class="options">
+                <button class="option-btn" id="btn-true" onclick="selectOption(true)">ĐÚNG</button>
+                <button class="option-btn" id="btn-false" onclick="selectOption(false)">SAI</button>
+            </div>
+        </div>
+        <button id="next-btn" class="btn" style="margin-top: 15px;" onclick="nextQuestion()" disabled>Câu Tiếp Theo</button>
+    </div>
+
+    <!-- Màn hình kết quả -->
+    <div id="result-screen" class="hidden result-box">
+        <h2>KẾT QUẢ BÀI THI</h2>
+        <p>Điểm số: <strong id="res-score" style="font-size: 1.8rem; color: var(--primary);">0/100</strong></p>
+        <p>Thời gian hoàn thành: <strong id="res-time">00:00</strong></p>
+        <p id="status-msg" class="status-msg"></p>
+        <button class="btn" style="margin-top: 20px;" onclick="location.reload()">Làm Lại Bài</button>
+    </div>
+</div>
+
+<script>
+    // 100 câu hỏi trắc nghiệm Đúng/Sai tổng hợp từ đề cương Lịch Sử 12 Giữa Kỳ 1
+    const quizData = [
+        // BÀI 1: LIÊN HỢP QUỐC
+        { statement: "Tổ chức Liên hợp quốc ra đời trong bối cảnh Chiến tranh thế giới thứ hai bước vào giai đoạn cuối, khi phe Đồng minh giành ưu thế.", isTrue: true },
+        { statement: "Ngày 1/1/1942, bản Tuyên ngôn Liên hợp quốc được kí kết tại Oa-sinh-tơn bởi đại diện 26 nước chống phát xít.", isTrue: true },
+        { statement: "Hội nghị Tê-hê-ran diễn ra từ ngày 28/11 đến 1/12/1943 với sự tham gia của ba nước Liên Xô, Mỹ, Anh.", isTrue: true },
+        { statement: "Hội nghị I-an-ta diễn ra từ ngày 25/4 đến 26/6/1945 tại Xan Phran-xít-cô.", isTrue: false },
+        { statement: "Hiến chương Liên hợp quốc chính thức có hiệu lực từ ngày 24/10/1945.", isTrue: true },
+        { statement: "Mục tiêu hàng đầu của Liên hợp quốc là duy trì hòa bình và an ninh thế giới.", isTrue: true },
+        { statement: "Liên hợp quốc thúc đẩy quan hệ hữu nghị giữa các quốc gia trên cơ sở tôn trọng nguyên tắc bình đẳng.", isTrue: true },
+        { statement: "Trung tâm điều hòa hành động của các quốc gia nhằm đạt mục tiêu chung là một nguyên tắc hoạt động của Liên hợp quốc.", isTrue: true },
+        { statement: "Liên hợp quốc không can thiệp vào công việc nội bộ của bất kỳ quốc gia nào.", isTrue: true },
+        { statement: "Giải quyết các tranh chấp quốc tế bằng biện pháp quân sự là một trong những nguyên tắc của Liên hợp quốc.", isTrue: false },
+        { statement: "Tôn trọng toàn vẹn lãnh thổ và độc lập chính trị quốc gia là nguyên tắc hoạt động của Liên hợp quốc.", isTrue: true },
+        { statement: "Liên hợp quốc đã có nhiều đóng góp trong việc ngăn ngừa không để xảy ra một cuộc chiến tranh thế giới mới.", isTrue: true },
+        { statement: "Liên hợp quốc đóng vai trò quan trọng trong việc chấm dứt nhiều cuộc xung đột khu vực.", isTrue: true },
+        { statement: "Việt Nam gia nhập Liên hợp quốc vào năm 1977 và là thành viên thứ 149.", isTrue: true },
+        { statement: "Liên hợp quốc tích cực hỗ trợ các nước nghèo phát triển kinh tế, giảm nghèo và ứng phó biến đổi khí hậu.", isTrue: true },
+
+        // BÀI 2: TRẬT TỰ THẾ GIỚI TRONG CHIẾN TRANH LẠNH
+        { statement: "Trật tự thế giới hai cực I-an-ta hình thành ngay sau khi Chiến tranh thế giới thứ hai kết thúc.", isTrue: true },
+        { statement: "Hội nghị I-an-ta quyết định tiêu diệt tận gốc phát xít Đức và quân phiệt Nhật Bản.", isTrue: true },
+        { statement: "Theo thỏa thuận I-an-ta, quân đội Liên Xô chiếm đóng miền Đông nước Đức và Đông Béc-lin.", isTrue: true },
+        { statement: "Quân đội Mỹ và Anh chiếm đóng miền Tây nước Đức và Tây Béc-lin.", isTrue: true },
+        { statement: "Ở khu vực châu Á, Liên Xô đóng vai trò kiểm soát chính tại Nhật Bản.", isTrue: false },
+        { statement: "Mông Cổ tiếp tục duy trì chế độ độc lập dưới tầm ảnh hưởng của Liên Xô theo thỏa thuận I-an-ta.", isTrue: true },
+        { statement: "Trung Quốc được khôi phục lại các quyền lợi ở Mãn Châu, Đài Loan sau chiến tranh.", isTrue: true },
+        { statement: "Hai nước Áo và Phần Lan trở thành những nước trung lập sau chiến tranh.", isTrue: true },
+        { statement: "Đông Nam Á, Nam Á, Tây Á vẫn thuộc phạm vi ảnh hưởng truyền thống của các nước phương Tây.", isTrue: true },
+        { statement: "Trật tự thế giới hai cực I-an-ta tồn tại trong khoảng thời gian từ năm 1945 đến năm 1991.", isTrue: true },
+        { statement: "Giai đoạn đầu của Trật tự hai cực I-an-ta từ 1945 đến những năm 70 đặc trưng bởi sự đối đầu căng thẳng giữa hai hệ thống xã hội.", isTrue: true },
+        { statement: "Sự tan rã của Liên Xô vào năm 1991 đã chính thức chấm dứt sự tồn tại của Trật tự hai cực I-an-ta.", isTrue: true },
+        { statement: "Sự sụp đổ của trật tự hai cực I-an-ta tạo khuôn khổ cho sự thiết lập trật tự thế giới mới đa cực.", isTrue: true },
+        { statement: "Chạy đua vũ trang là một trong những nguyên nhân khiến Liên Xô rơi vào khủng hoảng và suy thoái.", isTrue: true },
+        { statement: "Sự tan rã của hệ thống xã hội chủ nghĩa ở Liên Xô và Đông Âu diễn ra hoàn toàn do nguyên nhân bên ngoài.", isTrue: false },
+
+        // BÀI 3: TRẬT TỰ THẾ GIỚI SAU CHIẾN TRANH LẠNH
+        { statement: "Sau Chiến tranh lạnh, xu thế đa cực dần trở thành xu thế chủ đạo trong quan hệ quốc tế.", isTrue: true },
+        { statement: "Xu thế đa cực làm cho thế giới chỉ còn duy nhất một siêu cường kinh tế kiểm soát.", isTrue: false },
+        { statement: "Xu thế toàn cầu hóa là hệ quả tất yếu của cuộc cách mạng khoa học - công nghệ sau Chiến tranh lạnh.", isTrue: true },
+        { statement: "Toàn cầu hóa thúc đẩy sự phát triển mạnh mẽ của lực lượng sản xuất toàn cầu.", isTrue: true },
+        { statement: "Xu thế đối thoại, hợp tác thay thế cho xu thế đối đầu trong quan hệ quốc tế sau Chiến tranh lạnh.", isTrue: true },
+        { statement: "Mỹ là trung tâm quyền lực duy nhất còn lại chi phối toàn bộ thế giới sau năm 1991.", isTrue: false },
+        { statement: "Liên minh châu Âu (EU), Nhật Bản, Trung Quốc, Ấn Độ là các trung tâm kinh tế - chính trị lớn của thế giới hiện đại.", isTrue: true },
+        { statement: "Sự gia tăng sức mạnh của các nước đang phát triển góp phần thúc đẩy xu thế đa cực.", isTrue: true },
+        { statement: "Toàn cầu hóa chỉ mang lại toàn cơ hội và không có bất kỳ thách thức nào cho các nước đang phát triển.", isTrue: false },
+        { statement: "Nhu cầu ổn định để phát triển kinh tế là động lực thúc đẩy các nước đối thoại và hợp tác.", isTrue: true },
+
+        // BÀI 6: CÁCH MẠNG THÁNG TÁM NĂM 1945
+        { statement: "Chiến tranh thế giới thứ hai kết thúc tạo ra hoàn cảnh khách quan thuận lợi cho Cách mạng Tháng Tám.", isTrue: true },
+        { statement: "Ngày 8/8/1945, Nhật hoàng tuyên bố đầu hàng Đồng minh không điều kiện.", isTrue: true },
+        { statement: "Trong nước, quân Nhật rã rã, chính phủ thân Nhật Trần Trọng Kim hoang mang, dao động.", isTrue: true },
+        { statement: "Trung ương Đảng và Tổng bộ Việt Minh thành lập Ủy ban Khởi nghĩa toàn quốc vào giữa tháng 8/1945.", isTrue: true },
+        { statement: "Hội nghị toàn quốc của Đảng họp ở Tân Trào từ ngày 14 đến 15/8/1945.", isTrue: true },
+        { statement: "Đại hội Quốc dân Tân Trào tán thành chủ trương Tổng khởi nghĩa do Đảng đề ra.", isTrue: true },
+        { statement: "Đại hội Quốc dân Tân Trào đã cử ra Ủy ban Dân tộc giải phóng Việt Nam do Hồ Chí Minh làm Chủ tịch.", isTrue: true },
+        { statement: "Chiều 16/8/1945, theo lệnh Ủy ban Khởi nghĩa, một đội quân giải phóng do Võ Nguyên Giáp chỉ huy xuất phát từ Tân Trào đánh về Thái Nguyên.", isTrue: true },
+        { statement: "Ngày 18/8/1945, Bắc Giang, Hải Dương, Hà Tĩnh và Quảng Nam là những tỉnh giành chính quyền sớm nhất.", isTrue: true },
+        { statement: "Tối 19/8/1945, cuộc khởi nghĩa giành thắng lợi hoàn toàn tại Hà Nội.", isTrue: true },
+        { statement: "Ngày 23/8/1945, nhân dân Huế giành được chính quyền.", isTrue: true },
+        { statement: "Ngày 25/8/1945, Sài Gòn giành chính quyền thành công.", isTrue: true },
+        { statement: "Ngày 30/8/1945, vua Bảo Đại thoái vị, chấm dứt chế độ phong kiến Việt Nam.", isTrue: true },
+        { statement: "Cách mạng Tháng Tám năm 1945 diễn ra nhanh chóng và ít đổ máu.", isTrue: true },
+        { statement: "Chế độ phong kiến Việt Nam hoàn toàn sụp đổ sau Cách mạng Tháng Tám.", isTrue:
